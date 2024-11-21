@@ -7,6 +7,9 @@ from Crypto.PublicKey import RSA
 
 KEY_DIR = os.path.join(os.getcwd(), 'keydir')
 
+def generate_totp(hex_key):
+    print('YES BABY YES')
+
 def generate_rsa_encrypt():
     if not os.path.exists(KEY_DIR):
         os.mkdir(KEY_DIR)
@@ -16,7 +19,10 @@ def generate_rsa_encrypt():
     public_path = os.path.join(KEY_DIR, 'pub_key')
     private_path = os.path.join(KEY_DIR, 'priv_key')
     if not os.path.isfile(public_path) and not os.path.isfile(private_path):
-        with open
+        with open(public_path, 'w') as public_file:
+            public_file.write(public.decode('utf-8'))
+        with open(private_path, 'w') as private_file:
+            private_file.write(private.decode('utf-8'))
 
 
 
@@ -47,6 +53,8 @@ def main():
     if args.g is not None:
         hex_key = check_hexkey(args.g)
         generate_otp_key(hex_key)
+    elif args.k is not None:
+        generate_totp(args.k)
 
 
 if __name__=='__main__':
