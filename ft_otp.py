@@ -7,11 +7,41 @@ import hmac
 import hashlib
 import struct
 import time
+import qrcode
+import numpy as np
+import matplotlib.pyplot as plt
 from Crypto import Random
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+import qrcode.constants
 
 KEY_DIR = os.path.join(os.getcwd(), 'keydir')
+
+def display_qr_code(img):
+    try:
+        img_array = np.array(img)
+        fig, ax = plt.subplots()
+        ax.imshow(img_array, cmap='gray')
+        ax.axis('off')
+        plt.draw()
+        time_val = int(time.time() // 60)
+        time2 = int(time.time() // 60)
+        while time_val == time2:
+            plt.pause(1)
+            time2 = int(time.time() // 60)
+        ax.text(0.5, 1.05, 'Time is up. Your qr code is not available anymore!', ha='center', va='center', transform=ax.transAxes, fontsize=12, color='red')
+        plt.pause(5)
+        plt.close()
+    except KeyboardInterrupt as e:
+        exit('Keyboard Interupt!')
+
+def generate_qr_code(totp_code):
+    qr = qrcode.QRCode(version=3, box_size=20, border=10, error_correction=qrcode.constants.ERROR_CORRECT_H)
+    qr.add_data(str(totp_code))
+    qr.make(fit=True)
+    img = qr.make_image(fill_color='black', back_color='white')
+    display_qr_code(img)
+
 
 def hotp(secret_key, counter):
     counter_bytes = struct.pack(">Q", counter)
@@ -21,6 +51,13 @@ def hotp(secret_key, counter):
     trunc_hash = hmac_hash[offset:offset + 4]
     code = struct.unpack('>I', trunc_hash)[0] & 0x7fffffff
     return code % (10 ** 6)
+
+def generate_totp(otp_key):
+   secret_key = decode_otp_key(otp_key)
+   time_step = int(time.time() // 60)
+   totp_code = hotp(secret_key, time_step)
+   print(totp_code)
+   generate_qr_code(totp_code)
 
 def decode_otp_key(otp_key):
     try:
@@ -35,13 +72,6 @@ def decode_otp_key(otp_key):
         return (decrypted_key.decode('utf8'))
     except Exception as e:
         exit(f'{e}')
-
-def generate_totp(otp_key):
-   secret_key = decode_otp_key(otp_key)
-   time_step = int(time.time() // 60)
-   totp_code = hotp(secret_key, time_step)
-   print(totp_code)
-
 
 def generate_rsa_encrypt():
     if not os.path.exists(KEY_DIR):
