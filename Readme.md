@@ -15,7 +15,7 @@ options:
   -h, --help  show this help message and exit
   -g G        path to hexadecimal key
   -k K        path to key file to generate a new temporary password
-```
+``````
 
 ### Features
 
@@ -32,6 +32,7 @@ pip install -r requirements.txt
 echo "<hexadecimal key>" > key.txt
 ```
     Run the script:
+```
 python3 ft_otp.py key.txt
 ```
 
