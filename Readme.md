@@ -36,6 +36,3 @@ echo "<hexadecimal key>" > key.txt
 python3 ft_otp.py key.txt
 ```
 
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
