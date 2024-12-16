@@ -32,7 +32,6 @@ pip install -r requirements.txt
 echo "<hexadecimal key>" > key.txt
 ```
     Run the script:
-```bash
 python3 ft_otp.py key.txt
 ```
 
